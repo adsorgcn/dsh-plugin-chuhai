@@ -1,0 +1,51 @@
+{
+  "name": "dsh-plugin-chuhai",
+  "version": "0.1.0",
+  "description": "自媒体出海 for DeepSeek Harness — 说一句「自媒体出海」，DSH 从零带你做到海外平台：装机、内容源、知识库、出文章、公众号走通，再到 X 开蓝 V。iLang DSH 工具包的第一个官方插件。",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/*.js",
+    "skills/*.md",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "ilang",
+    "自媒体",
+    "出海",
+    "自媒体出海",
+    "AI全球自媒体"
+  ],
+  "license": "MIT",
+  "author": "adsorgcn",
+  "homepage": "https://dsh.ilang.guide/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adsorgcn/dsh-plugin-chuhai.git"
+  },
+  "engines": {
+    "node": ">=20",
+    "dsh": ">=0.2.1-rc.5 <0.3.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "test": "node --test test/plugin.test.mjs"
+  }
+}

@@ -1,0 +1,8 @@
+# 自媒体出海：注册一个 skill「zimeiti-chuhai」和一个取书工具「chuhai_book」。
+# pass 是 dsh.chuhai.express 的访问密码，插件替用户的 DSH 前置带上；bookUrl 一般不用改。
+- insert:
+    - id: dsh-plugin-chuhai
+      name: 'dsh-plugin-chuhai'
+      config:
+        bookUrl: https://dsh.chuhai.express/book
+        pass: 8Jupj8VhBxZFD5vFylhmq2vp
