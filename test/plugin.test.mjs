@@ -76,3 +76,10 @@ test('401 and non-book bodies become plain errors', async () => {
   await assert.rejects(fetchBook(o, async () => ({ ok: false, status: 503, text: async () => '' })), /503/);
   await assert.rejects(fetchBook(o, async () => ({ ok: true, status: 200, text: async () => '<html>gate</html>' })), /ILANG/);
 });
+
+test('network failures become one plain sentence with the cause', async () => {
+  const o = normalize({ pass: 'x' });
+  const err = new TypeError('fetch failed');
+  err.cause = Object.assign(new Error('getaddrinfo ENOTFOUND dsh.chuhai.express'), { code: 'ENOTFOUND' });
+  await assert.rejects(fetchBook(o, async () => { throw err; }), /连不上 dsh\.chuhai\.express（ENOTFOUND）/);
+});
