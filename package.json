@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-chuhai",
-  "version": "0.1.0",
-  "description": "自媒体出海 for DeepSeek Harness — 说一句「自媒体出海」，DSH 从零带你做到海外平台：装机、内容源、知识库、出文章、公众号走通，再到 X 开蓝 V。iLang DSH 工具包的第一个官方插件。",
+  "version": "0.2.0",
+  "description": "自媒体出海 for DeepSeek Harness — 说一句「自媒体出海」，DSH 从零带你做到海外平台：写作人格、内容源、知识库、出文章、公众号走通，再到 X 开蓝 V。前半段的书随插件带着，能单独用；iLang DSH 工具包的第一个官方插件。",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -12,8 +12,10 @@
   "files": [
     "lib/*.js",
     "skills/*.md",
+    "books/**",
     "cordis.patch.yml",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "keywords": [
