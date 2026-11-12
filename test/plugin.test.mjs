@@ -4,12 +4,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  apply, normalize, skillDefinition, toolDefinition, mainBookDefinition, fetchBook, splitBook, toc, part,
+  apply, normalize, skillDefinition, toolDefinition, mainBookDefinition, fetchBook, splitBook, toc, part, pages,
   mainBookText, mainBookPath, posterPath, name, inject,
 } from '../lib/index.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const LIMIT = 8192;
+const PART_LIMIT = 8000;
 
 const FIXTURE = [
   '::ILANG::v5.0::ENGINEERING_BOOK', '[TYPE:engineering_book]', '[ID:FIXTURE-BOOK]', '[VERSION:9.9]', '',
@@ -52,7 +53,7 @@ test('the shipped first half is a whole book with its poster', () => {
   assert.ok(fs.statSync(mainBookPath()).size > 10000);
 });
 
-test('splitBook: head / modules / tail, nothing lost, every part under the trim line', () => {
+test('splitBook: head / modules / tail, nothing lost, every page of every part under PART_LIMIT and joins back', () => {
   for (const text of [FIXTURE, mainBookText()]) {
     const b = splitBook(text);
     assert.ok(b.modules.length >= 2, 'modules ' + b.modules.length);
@@ -61,9 +62,41 @@ test('splitBook: head / modules / tail, nothing lost, every part under the trim 
     const norm = (s) => s.replace(/\r\n/g, '\n').split('\n').map((l) => l.trimEnd()).filter(Boolean).join('\n');
     assert.equal(norm(rebuilt), norm(text), 'parts do not add up to the book');
     for (const [label, s] of [['head', b.head], ['tail', b.tail], ...b.modules.map((m) => [m.id, m.text])]) {
-      assert.ok(s.length < LIMIT, `${label} is ${s.length} chars`);
+      const ps = pages(s);
+      for (const p of ps) {
+        assert.ok(p.length <= PART_LIMIT, `${label} page is ${p.length} chars`);
+      }
+      assert.equal(ps.join('\n'), s, `${label} pages do not join back`);
     }
   }
+});
+
+test('pages: a 20000-char module pages at block boundaries, toc labels pages, M#2 works, M#9 errors', () => {
+  const steps = [];
+  let n = 0;
+  while (steps.join('\n').length < 20000) {
+    n += 1;
+    steps.push(`  [STEP] ${n} ${'x'.repeat(190)}`);
+    steps.push('');
+  }
+  const text = '::ILANG::v5.0::ENGINEERING_BOOK\n[TYPE:engineering_book]\n[ID:PAGES-BOOK]\n[VERSION:1.0]\n\n'
+    + '::STATE{user}\n  role: 学员\n\n'
+    + '::MODULE{M|title:很长的一段}\n' + steps.join('\n') + '\n'
+    + '::RUBRIC{scoring}\n  T:S1 ok\n\n::ILANG::v5.0::ENGINEERING_BOOK\n';
+  const b = splitBook(text);
+  const M = b.modules.find((x) => x.id === 'M');
+  assert.ok(M.text.length > PART_LIMIT, 'module should exceed the limit, got ' + M.text.length);
+  const ps = pages(M.text);
+  assert.ok(ps.length >= 2, 'pages ' + ps.length);
+  assert.equal(ps.join('\n'), M.text, 'pages do not join back');
+  const t = toc(b);
+  assert.ok(t.includes(`${ps.length} 页 M#1 到 M#${ps.length}`), 'toc lacks page labels: ' + t);
+  const p1 = part(b, 'M#1');
+  const p2 = part(b, 'M#2');
+  assert.ok(p1.length <= PART_LIMIT && p2.length <= PART_LIMIT, `pages over limit: ${p1.length}/${p2.length}`);
+  const first = part(b, 'M');
+  assert.ok(first.includes('这段共') && first.includes('接着取 M#2'), 'first page lacks the hint: ' + first.slice(0, 120));
+  assert.throws(() => part(b, 'M#9'), /没有第 9 页/);
 });
 
 test('main book: the six rings are addressable and the toc lists them', () => {
