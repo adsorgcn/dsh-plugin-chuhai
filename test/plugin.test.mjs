@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   apply, normalize, skillDefinition, toolDefinition, mainBookDefinition, fetchBook, splitBook, toc, part, pages,
-  mainBookText, mainBookPath, posterPath, name, inject,
+  mainBookText, mainBookPath, posterPath, companionPath, name, inject,
 } from '../lib/index.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -51,6 +51,17 @@ test('the shipped first half is a whole book with its poster', () => {
   assert.ok(t.trimEnd().endsWith('::ILANG::v5.0::ENGINEERING_BOOK'));
   assert.ok(fs.existsSync(posterPath()), 'poster.jpg missing');
   assert.ok(fs.statSync(mainBookPath()).size > 10000);
+});
+
+test('the files the book points at ship next to it: second poster and the second lens card', () => {
+  const t = mainBookText();
+  for (const f of ['poster-poju.jpg', 'lens-yiyang.md']) {
+    assert.ok(t.includes(f), `book does not mention ${f}`);
+    assert.ok(fs.existsSync(companionPath(f)), `${f} missing`);
+  }
+  const lens = fs.readFileSync(companionPath('lens-yiyang.md'), 'utf8');
+  assert.ok(lens.startsWith('::ILANG::v5.0') && lens.trimEnd().endsWith('::ILANG::v5.0'));
+  assert.ok(lens.includes('|q:'), 'lens card rules must carry their quotes');
 });
 
 test('splitBook: head / modules / tail, nothing lost, every page of every part under PART_LIMIT and joins back', () => {
@@ -129,6 +140,7 @@ test('chuhai_main_book: toc by default, parts on request, poster path in the toc
   const tool = mainBookDefinition();
   const t = (await tool.execute({}, {})).content[0].text;
   assert.ok(t.includes('PERSONA') && t.includes('poster.jpg'));
+  assert.ok(t.includes('poster-poju.jpg') && t.includes('lens-yiyang.md'), 'toc must say where the new companion files are');
   const head = (await tool.execute({ part: 'head' }, {})).content[0].text;
   assert.ok(head.startsWith('::ILANG::v5.0::ENGINEERING_BOOK') && head.length < LIMIT);
   const ring = (await tool.execute({ part: 'LIBRARY' }, {})).content[0].text;
