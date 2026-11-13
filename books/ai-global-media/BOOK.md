@@ -1,15 +1,15 @@
 ::ILANG::v5.0::ENGINEERING_BOOK
 [TYPE:engineering_book]
 [ID:AI-GLOBAL-MEDIA]
-[VERSION:0.2.5]
+[VERSION:0.2.6]
 [DATE:2026-11-13]
 [LANG:zh]
 
 ::STATE{@USER, role:decision_maker, is:只会用豆包问问题的新手, does:说一句话 点头 扫码 粘贴 自己付钱}
 ::STATE{@AGENT, role:you_the_user_s_own_AI_running_in_DeepSeek_Harness_with_the_iLang_DSH_kit, does:everything_the_user_does_not_have_to_do, never:替用户扫码 登录 授权 付款}
 ::STATE{@KIT, persona_slot:soul/agent.md 第一部分 整段原样保存 换新版整块替换 并在文件头记 soul_id soul_version soul_sha256, skills_dir:.dsh/skills, poster:.dsh/books/ai-global-media/poster.jpg 生财三天体验卡, poster_poju:.dsh/books/ai-global-media/poster-poju.jpg 破局七天会员, profile:soul/soul.md 装工具包时问出来的用户档案, trail:handoff 与 log 里从第一天起记下的经过}
-::STATE{@EXPERT, name:公众号爆文专家, repo:https://github.com/adsorgcn/WorkBuddy, mirror:https://gitee.com/monetize/WorkBuddy, text:experts/ilang-wechat-awesome/agents/ilang-wechat-awesome.md 开头两行分隔线之后的全部, skills:experts/ilang-wechat-awesome/skills 下的文件夹 至少 wechat-article wechat-draft-push wechat-topic-hunter}
-::STATE{@FEED, what:拉热点源的方法 不是谁家的网站 专家的 wechat-topic-hunter 技能自带 scripts 下的 hot_sources.py 与 sources.json 八十多个公开源 中英日韩 打不开的源跳过 跨平台同一件事聚一起 按 AI 科技 热榜 财经 产品 海外 热搜词 七个方向 只拿标题和链接当选题线索 不搬正文 只用标准库 不要 key 不要账号, how:在用户自己的机器上跑 python hot_sources.py --cluster --json 结果落成 @STORE 的 feed 里当天那一份 文件名是日期；读的时候只读本机这一份；源表随专家包一起更新 装第一环时就带来了, not:不读 WorkBuddy 仓库每天生成的 latest.json 当源 那只是同一套方法在仓库里跑出来的结果 仓库没了本机照拉, daily:每天拉一次 并进 @SCHEDULE 那条提醒, side:这是需求侧 今天有人在聊什么；供给侧 公众号上这个题读了多少 是同一个技能的 hot 命令 走 wxrank 要花用户的钱 先报价}
+::STATE{@EXPERT, name:公众号爆文专家, where:专家包随书带着 在 .dsh/books/ai-global-media/expert 不用上网取 来源与哈希记在里面的 SOURCE.json, text:expert 下 agents/ilang-wechat-awesome.md 开头两行分隔线之后的全部, skills:expert 下 skills 里的四个文件夹 wechat-article wechat-draft-push wechat-topic-hunter remote-dispatch, has:爆文写作基因 两种骨架与标题公式 算法与节奏 去 AI 味 十二项自查 合规 封面词 微信排版规则 推草稿脚本 看榜选题与拉热点脚本}
+::STATE{@FEED, what:拉热点源的方法 不是谁家的网站 专家的 wechat-topic-hunter 技能自带 scripts 下的 hot_sources.py 与 sources.json 八十多个公开源 中英日韩 打不开的源跳过 跨平台同一件事聚一起 按 AI 科技 热榜 财经 产品 海外 热搜词 七个方向 只拿标题和链接当选题线索 不搬正文 只用标准库 不要 key 不要账号, how:在用户自己的机器上跑 python hot_sources.py --cluster --json 结果落成 @STORE 的 feed 里当天那一份 文件名是日期；读的时候只读本机这一份；源表随专家包一起更新 装第一环时就带来了, not:不读任何仓库里现成的 latest.json 当源 本机自己拉, daily:每天拉一次 并进 @SCHEDULE 那条提醒, side:这是需求侧 今天有人在聊什么；供给侧 公众号上这个题读了多少 是同一个技能的 hot 命令 走 wxrank 要花用户的钱 先报价}
 ::STATE{@SCYS, what:生财有术的官方 MCP, auth:OAuth 网页授权 用户自己用生财账号登录 配置里没有密钥, mode:只读, trial:体验卡用户也能接 开放搜索和阅读 每天有使用额度 卡只有三天, limit:同一个生财账号可以同时接 7 个 Agent DeepSeek Harness 与豆包各占一个 互不影响, manage:https://scys.com/mcp 生财的接入管理页 用户可以在那里查看和撤销自己的连接, tools:工具名都以 mcp__scys-mcp__ 开头 搜帖用 searchTopic 看全文用 topicDetail 问 AI 亦仁用 startAiYiRenChat 再用 queryAiYiRenChat 取回答}
 ::STATE{@PLUGIN, what:生财有术官方给 DeepSeek Harness 出的插件 许可 MIT, name:dsh-plugin-scys-mcp, source:npm, install:用 plugin_manager 工具安装这个组合包并启用, by_hand:左侧菜单 插件 右上角 添加插件 填 dsh-plugin-scys-mcp 点 安装 再点 立即启用, after:启用后它自动打开浏览器授权页 授权成功后几秒内工具出现, reauth:调用 mcp__scys-mcp__auth 重新打开授权页}
 ::STATE{@POJU, what:AI破局俱乐部的官方 CLI 命令叫 breakout, official:https://aipoju.com/cli 破局官网的 CLI 页, install:走工具包的免费全家桶 先问用户同意 再跑 tools/free_station.py install node breakout-cli --yes 都是官方源 已装的跳过 装完它自己验, auth:在终端跑 breakout auth login 加 --no-browser 它打印一条官网授权链接 链接约五分钟有效 这条命令要开着等到用户点完才算登录上 超时就重跑 配置里没有密钥 凭据由 CLI 自己存, mode:只读, trial:海报扫码领七天会员 试用装能用 CLI, tools:工具名都以 mcp__breakout__ 开头 具体能力名先用它查能力清单的那个工具查出来再调 不写死；只用读的 搜主题 看全文 按作者 问 AI 洋哥 问一次带 question 与一个 16 到 64 位的 requestId 回答一次就回来, sync:帖子从知识星球按小时同步 最新的最多晚一小时, limit:限流时 CLI 自己重试两次 再超就照返回的秒数等, manage:官网账号菜单 登录设备 可下线这台电脑}
@@ -52,10 +52,10 @@
 
 ::MODULE{PERSONA|title:第一环 装写作专家定成人格}
   [STEP] 1 persona_slot 里已经有公众号爆文专家的正文：告诉用户已装好 跳到 SOURCE
-  [STEP] 2 从 repo 取最新发布的专家包 取到系统的临时目录；取之前临时目录里有同名文件夹就先删掉；取完用 git status 核一次 工作树干净 experts 文件夹在 就算取到了 命令的退出码和警告不算数 不再回退；真没取到就从 mirror 取同一份；两处都取不到：用一句话告诉用户 然后停
-  [STEP] 3 把 skills 的文件夹原样拷进 skills_dir
+  [STEP] 2 照 @EXPERT 的 where 找到专家包；工作区里没有这个文件夹 就用取书工具目录里报的那一份；两处都没有：照 FALLBACK 告诉用户 然后停
+  [STEP] 3 把 skills 的四个文件夹原样拷进 skills_dir 那里已有同名的就整个换成这一份
   [STEP] 4 把 text 整段放进 persona_slot 不删不改 只换 Part one 这一节里面的内容 这一节的标题行和文件里别的部分一个字不动；在文件头记下 soul_id 与 soul_version 与 soul_sha256。soul_sha256 记的是放进去的那段正文的 sha256 换行统一成 LF 去掉首尾空白 按 UTF-8 算；正文里的 A: 行和 BOUNDARY 不补来源 不加任何键 记忆的门认 Part one 整段是用户给的；提交被门拦住说没有来源 是工具包旧了 先按引擎更新那条命令更新到 1.1.21 以上再提交 不改正文
-  [STEP] 5 删掉临时目录里的专家包；报三行：技能装到了哪 哪几个在技能列表里 人格放在哪
+  [STEP] 5 报三行：技能装到了哪 哪几个在技能列表里 人格放在哪
 
 ::MODULE{SOURCE|title:第二环 内容源}
   [STEP] 1 免费的那一源不用接 是你自己拉：先照 LIBRARY 的 STEP 2 把 @STORE 的文件夹建好；再照 @FEED 的 how 当场拉一次 落成 feed 里今天那一份 列出跟他品类有关的三条标题 告诉用户这是第一个内容源 方法随专家包装在本机 不花钱 不靠任何人的网站 以后每天自己拉
@@ -110,7 +110,7 @@
 ::RUBRIC{B5: 本机货仓建好了 且不进版本库|check:cmd|run:"python -c \"import io,os,sys;ok=os.path.isdir('library') and os.path.exists('.gitignore') and 'library/' in io.open('.gitignore',encoding='utf-8').read();sys.exit(0 if ok else 1)\""|expect:0}
 ::RUBRIC{B6: 货仓里有货 帖子或飞书链接至少一样；用户选了先不接案例库 这一条等接上再查|check:human}
 ::RUBRIC{B15: 热点是本机自己拉的 feed 里有今天那一份|check:cmd|run:"python -c \"import os,sys,datetime;sys.exit(0 if os.path.getsize(os.path.join('library','feed',datetime.date.today().isoformat()+'.json'))>1000 else 1)\""|expect:0}
-::RUBRIC{B16: 第二环列出了三条跟品类有关的标题 没有读过 WorkBuddy 仓库里的 latest.json 当源|check:human}
+::RUBRIC{B16: 第二环列出了三条跟品类有关的标题 没有拿任何仓库里现成的 latest.json 当源|check:human}
 ::RUBRIC{B17: ip.md 里记了视角是哪位 lens.md 照那位写；定的是易洋 的 lens.md 里每条规矩带他的原话 成稿第一句是判断 案例有人名数字 结尾有动作|check:human}
 ::RUBRIC{B7: 身份卡与视角卡都在 视角卡是亦仁或易洋之一|check:cmd|run:"python -c \"import os,sys;sys.exit(0 if all(os.path.exists(os.path.join('library','cards',n)) for n in ('ip.md','lens.md')) else 1)\""|expect:0}
 ::RUBRIC{B8: 成稿在 articles 里 且过了辨识度检查的三条|check:human}
@@ -121,7 +121,7 @@
 ::RUBRIC{B12: 工作区里没有留下下载的压缩包和解压出来的临时文件夹|check:human}
 ::RUBRIC{B13: 成稿的标题和正文里没有这本书自己的说法 也没有 照抄 搬运 这类字眼|check:human}
 
-::FALLBACK{expert_package_unreachable_on_both_sources then 用一句话告诉用户网络取不到专家包 然后停|user_has_no_account_on_either_and_skips_the_card then 再给他看一次两张海报 说案例库先空着 免费清单照常用 第一篇拆清单里当天的事 以后领了卡再说一句就接|feed_pull_gets_nothing then 把拉到几个源 跳过几个源 原样报给用户 这是这台机器的网络问题 记进 pending 先往下走 明天的提醒会再拉|plugin_cannot_be_installed_by_you then 把报错原样给用户看 请他照 @PLUGIN 的 by_hand 点一遍 这是生财官方教程的装法 还不行就停在这一环并记进交接单|mcp_authorization_fails then 把屏幕上的报错原样给用户看 请他重新授权一次 还不行就停在这一环并记进交接单|breakout_login_fails then 把授权链接原样给用户 请他在登录过破局的电脑浏览器里打开再点 确认登录 还不行就停在这一环并记进交接单|breakout_tools_missing_after_the_entry_is_added then 请用户重启一次 DeepSeek Harness 还没有就把报错原样给用户看 停在这一环并记进交接单|library_cannot_be_connected then 把报错原样给用户看 货照常落本机 记进 pending 接着走下一环|scys_quota_used_up_or_card_expired then 用货仓里已有的货接着写 告诉用户想继续拿新内容可以用海报上的码开通会员|no_case_in_the_library_fits_today then 换一个题 还没有就告诉用户今天先搬货 明天再写|draft_push_fails then 把报错原样给用户看 成稿留在 articles 记进交接单 不重试超过两次}
+::FALLBACK{expert_package_missing then 告诉用户工具包或插件旧了 里面没有专家包 请他更新后再说一句 AI全球自媒体 然后停|user_has_no_account_on_either_and_skips_the_card then 再给他看一次两张海报 说案例库先空着 免费清单照常用 第一篇拆清单里当天的事 以后领了卡再说一句就接|feed_pull_gets_nothing then 把拉到几个源 跳过几个源 原样报给用户 这是这台机器的网络问题 记进 pending 先往下走 明天的提醒会再拉|plugin_cannot_be_installed_by_you then 把报错原样给用户看 请他照 @PLUGIN 的 by_hand 点一遍 这是生财官方教程的装法 还不行就停在这一环并记进交接单|mcp_authorization_fails then 把屏幕上的报错原样给用户看 请他重新授权一次 还不行就停在这一环并记进交接单|breakout_login_fails then 把授权链接原样给用户 请他在登录过破局的电脑浏览器里打开再点 确认登录 还不行就停在这一环并记进交接单|breakout_tools_missing_after_the_entry_is_added then 请用户重启一次 DeepSeek Harness 还没有就把报错原样给用户看 停在这一环并记进交接单|library_cannot_be_connected then 把报错原样给用户看 货照常落本机 记进 pending 接着走下一环|scys_quota_used_up_or_card_expired then 用货仓里已有的货接着写 告诉用户想继续拿新内容可以用海报上的码开通会员|no_case_in_the_library_fits_today then 换一个题 还没有就告诉用户今天先搬货 明天再写|draft_push_fails then 把报错原样给用户看 成稿留在 articles 记进交接单 不重试超过两次}
 
 ::PRIORITY{
   user_decision > BOUNDARY > OBJECTIVE > RUBRIC > RULE > MODULE

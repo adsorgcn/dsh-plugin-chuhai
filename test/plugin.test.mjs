@@ -64,6 +64,24 @@ test('the files the book points at ship next to it: second poster and the second
   assert.ok(lens.includes('|q:'), 'lens card rules must carry their quotes');
 });
 
+test('the expert package ships next to the book, byte for byte against its source manifest', async () => {
+  const { createHash } = await import('node:crypto');
+  const root = companionPath('expert');
+  const man = JSON.parse(fs.readFileSync(path.join(root, 'SOURCE.json'), 'utf8'));
+  assert.match(man.upstream.commit, /^[0-9a-f]{40}$/);
+  const names = Object.keys(man.files);
+  assert.ok(names.includes('agents/ilang-wechat-awesome.md'));
+  for (const s of ['wechat-article', 'wechat-draft-push', 'wechat-topic-hunter', 'remote-dispatch']) {
+    assert.ok(names.includes(`skills/${s}/SKILL.md`), `${s} missing from the manifest`);
+  }
+  for (const rel of names) {
+    const buf = fs.readFileSync(path.join(root, rel));
+    const lf = Buffer.from(buf.toString('latin1').split('\r\n').join('\n'), 'latin1');
+    assert.equal(createHash('sha256').update(lf).digest('hex'), man.files[rel], `${rel} differs from its source`);
+  }
+  assert.ok(mainBookText().includes('.dsh/books/ai-global-media/expert'), 'book must point at the bundled expert package');
+});
+
 test('splitBook: head / modules / tail, nothing lost, every page of every part under PART_LIMIT and joins back', () => {
   for (const text of [FIXTURE, mainBookText()]) {
     const b = splitBook(text);
@@ -141,6 +159,7 @@ test('chuhai_main_book: toc by default, parts on request, poster path in the toc
   const t = (await tool.execute({}, {})).content[0].text;
   assert.ok(t.includes('PERSONA') && t.includes('poster.jpg'));
   assert.ok(t.includes('poster-poju.jpg') && t.includes('lens-yiyang.md'), 'toc must say where the new companion files are');
+  assert.ok(t.includes('写作专家包') && t.includes(companionPath('expert')), 'toc must say where the expert package is');
   const head = (await tool.execute({ part: 'head' }, {})).content[0].text;
   assert.ok(head.startsWith('::ILANG::v5.0::ENGINEERING_BOOK') && head.length < LIMIT);
   const ring = (await tool.execute({ part: 'LIBRARY' }, {})).content[0].text;

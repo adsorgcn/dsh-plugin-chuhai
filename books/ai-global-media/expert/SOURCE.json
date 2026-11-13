@@ -1,0 +1,41 @@
+{
+  "what": "公众号爆文专家的专家包，从上游原样拷来，一个字不改；主书第一环用它装人格和技能",
+  "upstream": {
+    "repo": "https://github.com/adsorgcn/WorkBuddy",
+    "path": "experts/ilang-wechat-awesome",
+    "commit": "3499a867f7258df701fbe897ee8d111b138dc67d",
+    "version": "2.3.58"
+  },
+  "copied_on": "2026-11-13",
+  "hash": "sha256，CRLF 换成 LF 后算",
+  "files": {
+    "agents/ilang-wechat-awesome.md": "677d6afc9344f94b11275b47630e4ddf811921ed8b60828dc3e8cea43224a119",
+    "skills/remote-dispatch/SKILL.md": "c608b8f68b778bf175a8a7ed9209ab65be4c3642b491900854cf487adbd54c7b",
+    "skills/remote-dispatch/references/gateway-api.md": "8cfeb51cc1893d1fe5f3e5ab25604b7d8d16c59e4a80df70fca40e1382eced51",
+    "skills/remote-dispatch/scripts/dispatch.py": "d7db7856ae1b4a9af59f48dc8002276a5c8298fff91e7b5f4b4d876cadf8416c",
+    "skills/remote-dispatch/scripts/setup-gateway.ps1": "2eb5a82f6f048e08207c21fa0f04b777a488891dbb99e1b52bcd4ea5dfca3f7f",
+    "skills/remote-dispatch/scripts/setup-gateway.sh": "fb518332fa745d87c33f4ab06571c8b018203c3f51c0a1dd2da23cd07c9e095b",
+    "skills/wechat-article/SKILL.md": "aa9e9a71af6b9db52df908b73231f5dde2d9dd9d04ddeee1e0f7832f9ff90c00",
+    "skills/wechat-article/references/algorithm-and-rhythm.md": "2b726c4827b7b426fbf0a5bb179bf5e302feb6693375018ca9abffd1108f3892",
+    "skills/wechat-article/references/compliance.md": "9fb27dd2fa583afbe767da7893813ce078ec88822abec90d6f8cc2f70b0a7528",
+    "skills/wechat-article/references/cover-prompt.md": "e2e4693569adca5c6bf4ec0b9142df4871c257094cd6b4f2282e8c55d3e19cd9",
+    "skills/wechat-article/references/deai.md": "4ace9b56d9c39a9b31cff31c8082d991a89b755c3f8100f45c4a97bd3393558f",
+    "skills/wechat-article/references/genes.md": "18f9a69419ba7a51afb32918244c352d8813c72a8d4c8cbca1c7e5a05758e2b5",
+    "skills/wechat-article/references/other-platforms.md": "1f4407febb29aba912873d296697d4f7be20983494c8cb8e9836415dd257acb8",
+    "skills/wechat-article/references/self-check.md": "03aebcfc06221f2dee6af46ebb0269456207448905376938bda5a359934cd070",
+    "skills/wechat-article/references/structures-and-titles.md": "a1e7dc839c07baf30068bd50c14671dd6598813c6f14be010601110e1596d92c",
+    "skills/wechat-article/references/wechat-format-and-api.md": "747a530b06a817fb891c9fdbd8df4c3d2ec4451185c07de8f3b8702d40a9ebd0",
+    "skills/wechat-draft-push/SKILL.md": "a36998037aff05983086921505407dd6914c46abf76936d5de679aeee580e827",
+    "skills/wechat-draft-push/references/api-notes.md": "b02e2956cdd326275d714a94c9900b1cae68a4ed04fb37d26cc74ae64779ed97",
+    "skills/wechat-draft-push/references/html-rules.md": "c66a68e670fcaa846a228c37694e7d92336c921438fa1adcc0821ebf58b74c15",
+    "skills/wechat-draft-push/scripts/cards.html": "e9cd3d54bcb14fade2a1eba27d1c1cd0c3bf7761141c8c7e7a78ae8805d0f689",
+    "skills/wechat-draft-push/scripts/newspic_cards.py": "b60c30338dbac99583d45acf9c72600f277813ca5ce15cfee060f67bcda63a65",
+    "skills/wechat-draft-push/scripts/wechat_draft.py": "f78abbff079b8bf7dd09226655d39c19b937873642241c9edbb6074c24c71a80",
+    "skills/wechat-topic-hunter/SKILL.md": "2d3c8e4be7a2c06216f20de578210cbc5671b6e2c255814531e171a495014895",
+    "skills/wechat-topic-hunter/references/method.md": "ebe4774f5c97defbeaf6d047552c970d49261b348f8fc4a2f68914db39f2c81e",
+    "skills/wechat-topic-hunter/references/wxrank-api.md": "f2746f61497513373e3993da7e21864012ec73b2e28bbcca4940cc262928c9f8",
+    "skills/wechat-topic-hunter/scripts/hot_sources.py": "f3c247ca2cb61f14d1df09216e61c214a2f6d0f8e8d5a6121277fae3eab47501",
+    "skills/wechat-topic-hunter/scripts/sources.json": "d61a642732ef26bfb50015cdd4263d0e1b21b231ced10f2b8007327a27752d03",
+    "skills/wechat-topic-hunter/scripts/wxrank_topics.py": "2efed48d1bee2baf521d9535cbb092553192c47622248b093a1cbbe3ee782a48"
+  }
+}
