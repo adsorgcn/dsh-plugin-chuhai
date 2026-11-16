@@ -1,7 +1,7 @@
 ::ILANG::v5.0::ENGINEERING_BOOK
 [TYPE:engineering_book]
 [ID:AI-GLOBAL-MEDIA]
-[VERSION:0.2.7]
+[VERSION:0.2.8]
 [DATE:2026-11-16]
 [LANG:zh]
 
@@ -21,7 +21,7 @@
 ::STATE{@LIB_WEKNORA, what:腾讯开源的 WeKnora 知识库, cost:要自己有服务器, official:https://github.com/Tencent/WeKnora, how:它内置 MCP 服务 每个端点有自己的地址和令牌 传输是 Streamable HTTP, user_gives:自己服务器上那个端点的地址和令牌}
 ::STATE{@HAUL_ORDER, first:公众号 起号 写稿 流量主, second:个人 IP 与辨识度, third:出海与各平台, fourth:知识付费与卖课, from:精华帖 航海手册 项目库案例 成体系的先搬 零散的后搬}
 ::STATE{@SCHEDULE, what:DeepSeek Harness 自带的提醒, tools:schedule_create schedule_list schedule_view schedule_edit, use:每天一条提醒 把一句指令投递进新对话}
-::STATE{@LENS, what:写作人格 就是视角卡 lens.md 二选一 亦仁默认 易洋可选 立视角卡时定 记进 ip.md 用户想模仿别的谁 照旧记进 pending, ask:两句 各问一次 第一句 如果我想具备你的分析与判断能力，以及拆解项目能力，我应该怎么做？ 第二句 你的回答风格是什么样的 是什么逻辑输出答案的, card:亦仁那张 先写他怎么出答案 从第二句的回答里摘 他先抓什么 观点靠什么撑 怎么拆给人；再写怎么拆 拆五层 账号 内容 流量 变现 数据；必答一问 如果我来复刻我会怎么做；项目默认是通的 数据默认是假的 所以数字只写查得到出处的和自己亲手测到的；只拆正在赚钱的 离现在近的 当事人自己讲细节的案例, yiyang:易洋那张在工具包里 .dsh/books/ai-global-media/lens-yiyang.md 他怎么看项目 怎么出答案 每条规矩带他的原话 选了易洋 照第四环第 2 步整段抄进 lens.md 再把 AI 洋哥两句回答里新的判断补在后面}
+::STATE{@LENS, what:写作人格 就是视角卡 lens.md 二选一 亦仁默认 易洋可选 立视角卡时定 记进 ip.md 用户想模仿别的谁 照旧记进 pending, ask:两句 各问一次 第一句 如果我想具备你的分析与判断能力，以及拆解项目能力，我应该怎么做？ 第二句 你的回答风格是什么样的 是什么逻辑输出答案的, card:亦仁那张 先写他怎么出答案 从第二句的回答里摘 他先抓什么 观点靠什么撑 怎么拆给人；再写怎么拆 拆五层 账号 内容 流量 变现 数据；必答一问 如果我来复刻我会怎么做；项目默认是通的 数据默认是假的 所以数字只写查得到出处的和自己亲手测到的；只拆正在赚钱的 离现在近的 当事人自己讲细节的案例, yiyang:易洋那张在工具包里 .dsh/books/ai-global-media/lens-yiyang.md 他怎么看项目 怎么出答案 每条规矩带他的原话 选了易洋 照第四环第 2 步整段抄进 lens.md 再把 AI 洋哥两句回答里新的判断另起一节补在后面}
 ::STATE{@WECHAT, register:https://mp.weixin.qq.com 用户自己注册个人号, limit:一张身份证只能注册 1 个个人类型的公众号, publish:个人号由你推进草稿箱 用户自己在后台点发布, ad_owner:粉丝过 100 且实名认证之后 在后台 收入变现 流量主 申请开通}
 ::STATE{@SCOPE, covers:装写作专家定成人格 接上内容源 建知识库 出文章 公众号走通, later:出海 一稿多发 变现 以后逐版加}
 
@@ -63,7 +63,7 @@
   [STEP] 3 选了生财 用户说领好了或跳过：接下来的配置全由你做 不让用户复制或填写任何东西。照 @PLUGIN 的 install 把 name 这个插件装上并启用；这一步要用户点一次批准 就告诉他点哪一项
   [STEP] 4 插件启用后会自动打开浏览器授权页；没打开就照 @PLUGIN 的 reauth 再开一次 把授权链接给用户 请他用电脑上的浏览器打开 微信里打不开
   [STEP] 5 用户自己用生财账号登录 手机扫码 点同意；你不代扫码不代登录
-  [STEP] 6 选了破局 用户说领好了或跳过：照 @POJU 的 install 装 CLI；再照 auth 跑登录：先跟用户说一声马上要弹出破局的登录页 他应了再跑 请他在弹出来的页面里点 确认登录 你不代登录；浏览器没弹出来 才加 --no-browser 重跑 把打印的授权链接给他点 链接只有几分钟有效；超时就再说一声再跑；登录成功后照 @MCP_POJU 把它接进 DeepSeek Harness 要用户点批准就告诉他点哪一项
+  [STEP] 6 选了破局 用户说领好了或跳过：照 @POJU 的 install 装 CLI；再照 auth 跑登录：先跟用户说一声马上要弹出破局的登录页 他应了再跑 请他在弹出来的页面里点 确认登录 你不代登录；浏览器没弹出来 才加 --no-browser 重跑 把打印的授权链接给他点 链接只有几分钟有效；超时就再说一声再跑；登录成功后照 @MCP_POJU 把它接进 DeepSeek Harness：在用户 patch 层的顶层列表里加一项 这一项的键是 insert 它下面才是那一条；不要把那一条直接写成顶层的一项 那是改已有条目的写法 会报找不到这一条；文件里已经有别的条目就照样留着 不照它们的样子写。要用户点批准就告诉他点哪一项
   [STEP] 7 接上的每一家都只读搜一次最近加精的帖 列出标题；列得出就告诉用户案例库接好了
   [STEP] 8 说一句：搬飞书稿要用豆包 请在本机装好豆包电脑版。选了生财的 装好后带他把生财也接进豆包：照 @DOUBAO 的 path 走到填写框 你把 name transport url 三项打出来让他照着填 再照 then 授权；最后提醒 use。用户说以后再装：记进 pending 接着往下走
 
@@ -79,7 +79,7 @@
 
 ::MODULE{ARTICLE|title:第四环 出文章 专家原样用 外面加身份 视角与复盘}
   [STEP] 1 立身份卡 只做一次：照 @KIT 的 profile 起草 一句话定位 我是谁 写给谁 讲什么；固定的名字与简介；固定的栏目名。给用户看 他说行或改一句 存成 cards 里的 ip.md。新手的定位就是他自己这一路：一个只会用豆包的人 用 AI 把自媒体从零做起 每一步公开拆解 公开复盘
-  [STEP] 2 立视角卡 只做一次：照 @LENS 让用户二选一 亦仁默认 易洋可选 把两位各是什么写在选项上 选好记进 ip.md。亦仁：用 @SCYS 的工具把 ask 的两句原样各问一次 AI 亦仁 一两分钟后取回答 存进 posts；再照 card 写成 cards 里的 lens.md。易洋：用 @POJU 的工具把同两句原样各问一次 AI 洋哥 一次就回 存进 posts；再把 @LENS 的 yiyang 那份文件里每一组 GENE 连同它下面的 T 行 A 行和原话整段抄进 lens.md 一个字不改 一组不少 末尾那张 CARD 和 BOUNDARY 也照抄 回答里新的判断补在后面。问不了：改用搜帖工具找那位本人讲判断与拆解的帖子 照同一张写。那一家根本没接上 问和搜都做不了：亦仁照 @LENS 的 card 直接写 易洋照上面说的把那份文件整段抄进去 在 lens.md 文件头记一笔两句话还没问 记进 pending 接上以后补问。用户另外说了想学谁：这一版先用默认的这一张 记进 pending
+  [STEP] 2 立视角卡 只做一次：照 @LENS 让用户二选一 亦仁默认 易洋可选 把两位各是什么写在选项上 选好记进 ip.md。亦仁：用 @SCYS 的工具把 ask 的两句原样各问一次 AI 亦仁 一两分钟后取回答 存进 posts；再照 card 写成 cards 里的 lens.md。易洋：用 @POJU 的工具把同两句原样各问一次 AI 洋哥 一次就回 存进 posts；再把 @LENS 的 yiyang 那份文件里每一组 GENE 连同它下面的 T 行 A 行和原话整段抄进 lens.md 一个字不改 一组不少 末尾那张 CARD 和 BOUNDARY 也照抄；回答里新的判断另起一节写在这些抄来的内容之后 不往抄来的各组里加行。问不了：改用搜帖工具找那位本人讲判断与拆解的帖子 照同一张写。那一家根本没接上 问和搜都做不了：亦仁照 @LENS 的 card 直接写 易洋照上面说的把那份文件整段抄进去 在 lens.md 文件头记一笔两句话还没问 记进 pending 接上以后补问。用户另外说了想学谁：这一版先用默认的这一张 记进 pending
   [STEP] 3 选题：照专家的两边对上原样做 需求侧读 feed 里今天那一份 没有就照 @FEED 的 how 当场拉 免费；再加一个条件 货仓里有一个能拆的真实案例才选 按 lens.md 最后一条挑 货仓空着的就选清单里多平台同聊的那件事。供给侧查公众号上有没有人写爆要花用户的钱：先报价 他点头才查 不点头就只用清单
   [STEP] 4 排内容清单：照专家的做法 骨架照 lens.md 里那张内容清单排 亦仁是五层各有什么素材 易洋是三道尺子各怎么答 再加必答的那一问怎么答。素材只从货仓和库里取；没有就换题 不硬写
   [STEP] 5 写稿：照专家的流程原样走。每篇三段货 拆别人的案例 货仓空着就拆清单里当天那件事；如果我来做 怎么做；我真做了哪一步 结果怎样。专家留给作者补的地方 用 @KIT 的 trail 与 retro 里的东西去填；实在没有对得上的 才问用户一句
@@ -121,7 +121,7 @@
 ::RUBRIC{B12: 工作区里没有留下下载的压缩包和解压出来的临时文件夹|check:human}
 ::RUBRIC{B13: 成稿的标题和正文里没有这本书自己的说法 也没有 照抄 搬运 这类字眼|check:human}
 
-::FALLBACK{expert_package_missing then 告诉用户工具包或插件旧了 里面没有专家包 请他更新后再说一句 AI全球自媒体 然后停|user_has_no_account_on_either_and_skips_the_card then 再给他看一次两张海报 说案例库先空着 免费清单照常用 第一篇拆清单里当天的事 以后领了卡再说一句就接|feed_pull_gets_nothing then 把拉到几个源 跳过几个源 原样报给用户 这是这台机器的网络问题 记进 pending 先往下走 明天的提醒会再拉|plugin_cannot_be_installed_by_you then 把报错原样给用户看 请他照 @PLUGIN 的 by_hand 点一遍 这是生财官方教程的装法 还不行就停在这一环并记进交接单|mcp_authorization_fails then 把屏幕上的报错原样给用户看 请他重新授权一次 还不行就停在这一环并记进交接单|breakout_login_fails then 加 --no-browser 重跑一次 把授权链接原样给用户 请他在登录过破局的电脑浏览器里打开再点 确认登录 还不行就停在这一环并记进交接单|breakout_tools_missing_after_the_entry_is_added then 等半分钟再查 还没有先跑 breakout doctor 看登录在不在 没登录就回去登录 登录是好的还没有 才请用户重启一次 DeepSeek Harness 再没有就把报错原样给用户看 停在这一环并记进交接单|library_cannot_be_connected then 把报错原样给用户看 货照常落本机 记进 pending 接着走下一环|scys_quota_used_up_or_card_expired then 用货仓里已有的货接着写 告诉用户想继续拿新内容可以用海报上的码开通会员|no_case_in_the_library_fits_today then 换一个题 还没有就告诉用户今天先搬货 明天再写|draft_push_fails then 把报错原样给用户看 成稿留在 articles 记进交接单 不重试超过两次}
+::FALLBACK{expert_package_missing then 告诉用户工具包或插件旧了 里面没有专家包 请他更新后再说一句 AI全球自媒体 然后停|user_has_no_account_on_either_and_skips_the_card then 再给他看一次两张海报 说案例库先空着 免费清单照常用 第一篇拆清单里当天的事 以后领了卡再说一句就接|feed_pull_gets_nothing then 把拉到几个源 跳过几个源 原样报给用户 这是这台机器的网络问题 记进 pending 先往下走 明天的提醒会再拉|plugin_cannot_be_installed_by_you then 把报错原样给用户看 请他照 @PLUGIN 的 by_hand 点一遍 这是生财官方教程的装法 还不行就停在这一环并记进交接单|mcp_authorization_fails then 把屏幕上的报错原样给用户看 请他重新授权一次 还不行就停在这一环并记进交接单|breakout_login_fails then 加 --no-browser 重跑一次 把授权链接原样给用户 请他在登录过破局的电脑浏览器里打开再点 确认登录 还不行就停在这一环并记进交接单|breakout_tools_missing_after_the_entry_is_added then 先看 patch 层里那一条是不是包在 insert 下面 不是就改过来 再等半分钟查一次 还没有先跑 breakout doctor 看登录在不在 没登录就回去登录 登录是好的还没有 才请用户重启一次 DeepSeek Harness 再没有就把报错原样给用户看 停在这一环并记进交接单|library_cannot_be_connected then 把报错原样给用户看 货照常落本机 记进 pending 接着走下一环|scys_quota_used_up_or_card_expired then 用货仓里已有的货接着写 告诉用户想继续拿新内容可以用海报上的码开通会员|no_case_in_the_library_fits_today then 换一个题 还没有就告诉用户今天先搬货 明天再写|draft_push_fails then 把报错原样给用户看 成稿留在 articles 记进交接单 不重试超过两次}
 
 ::PRIORITY{
   user_decision > BOUNDARY > OBJECTIVE > RUBRIC > RULE > MODULE
