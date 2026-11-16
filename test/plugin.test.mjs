@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import {
   apply, normalize, skillDefinition, toolDefinition, mainBookDefinition, fetchBook, splitBook, toc, part, pages,
   mainBookText, mainBookPath, posterPath, companionPath, name, inject,
+  fetchLatestMainBook, sha256Lf, compareVersions,
 } from '../lib/index.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -155,15 +156,120 @@ test('apply registers one skill and two tools, dispose removes all three', () =>
 });
 
 test('chuhai_main_book: toc by default, parts on request, poster path in the toc', async () => {
-  const tool = mainBookDefinition();
+  const tool = mainBookDefinition(normalize({ liveMainBook: false }), async () => { throw new Error('the switch is off, nothing may be fetched'); });
   const t = (await tool.execute({}, {})).content[0].text;
   assert.ok(t.includes('PERSONA') && t.includes('poster.jpg'));
+  assert.ok(t.includes('插件里带的'), 'toc must say which copy is in use');
   assert.ok(t.includes('poster-poju.jpg') && t.includes('lens-yiyang.md'), 'toc must say where the new companion files are');
   assert.ok(t.includes('写作专家包') && t.includes(companionPath('expert')), 'toc must say where the expert package is');
   const head = (await tool.execute({ part: 'head' }, {})).content[0].text;
   assert.ok(head.startsWith('::ILANG::v5.0::ENGINEERING_BOOK') && head.length < LIMIT);
   const ring = (await tool.execute({ part: 'LIBRARY' }, {})).content[0].text;
   assert.ok(ring.startsWith('::MODULE{LIBRARY'));
+});
+
+/* ---------- the latest main book, taken live and checked ---------- */
+
+const SOURCES = [
+  { name: 'A', registry: 'https://a.example/registry.json', book: 'https://a.example/BOOK.md' },
+  { name: 'B', registry: 'https://b.example/registry.json', book: 'https://b.example/BOOK.md' },
+];
+
+/** A copy of the shipped book with another version line: a valid, different edition. */
+function edition(version, extra = '') {
+  return mainBookText().replace(/\r\n/g, '\n').replace(/^\[VERSION:[^\]]*\]/m, `[VERSION:${version}]`).replace('::MODULE{PERSONA', extra + '::MODULE{PERSONA');
+}
+
+function registryFor(text, over = {}) {
+  const version = /^\[VERSION:([^\]]+)\]/m.exec(text)[1];
+  return JSON.stringify({ entries: [{ kind: 'plugin', name: 'x' }, { kind: 'book', name: 'ai-global-media', version, sha256_lf: sha256Lf(text), ...over }] });
+}
+
+/** A fetch stand-in: `site` maps a URL to a body, an Error to throw, or a number to answer with that status. */
+function fakeFetch(site, calls = []) {
+  return async (url) => {
+    calls.push(url);
+    const v = site[url];
+    if (v instanceof Error) throw v;
+    if (typeof v === 'number') return { ok: false, status: v, text: async () => '' };
+    if (v === undefined) return { ok: false, status: 404, text: async () => '' };
+    return { ok: true, status: 200, text: async () => v };
+  };
+}
+
+function shippedVersion() {
+  return /^\[VERSION:([^\]]+)\]/m.exec(mainBookText())[1];
+}
+
+function bump(v, by) {
+  const p = v.split('.').map(Number);
+  p[p.length - 1] += by;
+  return p.join('.');
+}
+
+test('compareVersions orders dotted numbers', () => {
+  assert.equal(compareVersions('0.2.10', '0.2.9'), 1);
+  assert.equal(compareVersions('0.2.7', '0.2.7'), 0);
+  assert.equal(compareVersions('0.2', '0.2.1'), -1);
+});
+
+test('live main book: a newer edition whose digest matches the registry is served, and fetched once', async () => {
+  const newer = edition(bump(shippedVersion(), 1), '::RULE{live_marker then 这一行只在新版里|source:test}\n\n');
+  const calls = [];
+  const site = { [SOURCES[0].registry]: registryFor(newer), [SOURCES[0].book]: newer, [SOURCES[1].registry]: new Error('offline'), [SOURCES[1].book]: new Error('offline') };
+  const tool = mainBookDefinition(normalize({ mainBookSources: SOURCES }), fakeFetch(site, calls));
+  const t = (await tool.execute({}, {})).content[0].text;
+  assert.ok(t.includes(`版本 ${bump(shippedVersion(), 1)}`), 'toc should show the live version: ' + t.split('\n')[0]);
+  assert.ok(t.includes('从 A 取的最新版') && t.includes('摘要核对过'), 'toc should say where the book came from');
+  assert.ok(t.includes(companionPath('expert')), 'companion files still come from the package');
+  let head = (await tool.execute({ part: 'head' }, {})).content[0].text;
+  if (head.includes('接着取 head#2')) head += (await tool.execute({ part: 'head#2' }, {})).content[0].text; // the extra line tips the head onto a second page
+  assert.ok(head.includes('live_marker'), 'parts must come from the live edition');
+  const n = calls.length;
+  await tool.execute({ part: 'tail' }, {});
+  assert.equal(calls.length, n, 'later parts come from the cache');
+});
+
+test('live main book: a source whose book does not match its registry is refused, the other source is used', async () => {
+  const good = edition(bump(shippedVersion(), 2));
+  const tampered = good.replace('::MODULE{PERSONA', '::RULE{x then 被改过|source:nobody}\n\n::MODULE{PERSONA');
+  const site = { [SOURCES[0].registry]: registryFor(good), [SOURCES[0].book]: tampered, [SOURCES[1].registry]: registryFor(good), [SOURCES[1].book]: good };
+  const live = await fetchLatestMainBook(normalize({ mainBookSources: SOURCES }), fakeFetch(site));
+  assert.equal(live.source, 'B');
+  assert.equal(live.text, good);
+});
+
+test('live main book: wrong version line, half a book, a missing row: each is refused', async () => {
+  const good = edition(bump(shippedVersion(), 1));
+  const o = normalize({ mainBookSources: [SOURCES[0]] });
+  const cases = [
+    [{ [SOURCES[0].registry]: registryFor(good, { version: '9.9.9' }), [SOURCES[0].book]: good }, /版本对不上/],
+    [{ [SOURCES[0].registry]: registryFor(good), [SOURCES[0].book]: good.slice(0, 3000) }, /不是完整的工程书/],
+    [{ [SOURCES[0].registry]: JSON.stringify({ entries: [] }), [SOURCES[0].book]: good }, /清单里没有这本书/],
+    [{ [SOURCES[0].registry]: '<html>', [SOURCES[0].book]: good }, /清单没取到/],
+    [{ [SOURCES[0].registry]: registryFor(good), [SOURCES[0].book]: 503 }, /书没取到（HTTP 503）/],
+  ];
+  for (const [site, pattern] of cases) await assert.rejects(fetchLatestMainBook(o, fakeFetch(site)), pattern);
+});
+
+test('live main book: nothing reachable, or an older edition online: the shipped copy is used and the toc says so', async () => {
+  const down = { [SOURCES[0].registry]: new Error('ENOTFOUND'), [SOURCES[1].registry]: 500 };
+  const t1 = (await mainBookDefinition(normalize({ mainBookSources: SOURCES }), fakeFetch(down)).execute({}, {})).content[0].text;
+  assert.ok(t1.includes(`版本 ${shippedVersion()}`) && t1.includes('这次没取到') && t1.includes('不影响照着做'), t1.split('\n').slice(0, 12).join(' | '));
+  const older = edition('0.0.1');
+  const old = { [SOURCES[0].registry]: registryFor(older), [SOURCES[0].book]: older, [SOURCES[1].registry]: 500 };
+  const t2 = (await mainBookDefinition(normalize({ mainBookSources: SOURCES }), fakeFetch(old)).execute({}, {})).content[0].text;
+  assert.ok(t2.includes(`版本 ${shippedVersion()}`) && t2.includes('比它旧'), 'an older online edition must not replace the shipped one');
+});
+
+test('live main book: sources must be https; the default sources are the toolkit repository and its mirror', () => {
+  assert.throws(() => normalize({ mainBookSources: [{ name: 'x', registry: 'http://x/r.json', book: 'https://x/b.md' }] }), /https/);
+  const o = normalize({});
+  assert.equal(o.liveMainBook, true);
+  assert.deepEqual(o.mainBookSources.map((s) => s.name), ['GitHub', 'Gitee']);
+  for (const s of o.mainBookSources) {
+    assert.ok(s.registry.endsWith('/docs/market/registry.json') && s.book.endsWith('/.dsh/books/ai-global-media/BOOK.md'));
+  }
 });
 
 test('chuhai_book: sends the pass header once, serves parts from one fetch', async () => {
