@@ -262,6 +262,59 @@ test('live main book: nothing reachable, or an older edition online: the shipped
   assert.ok(t2.includes(`版本 ${shippedVersion()}`) && t2.includes('比它旧'), 'an older online edition must not replace the shipped one');
 });
 
+/** Wrap a fetch stand-in so that URLs of one host answer only after `ms`. */
+function slow(fetchImpl, host, ms) {
+  return async (url, init) => {
+    if (String(url).includes(host)) await new Promise((r) => setTimeout(r, ms));
+    return fetchImpl(url, init);
+  };
+}
+
+test('live main book: of two sources that verify, the higher version is used even when the older one answers first', async () => {
+  const older = edition(bump(shippedVersion(), 1));
+  const newer = edition(bump(shippedVersion(), 2));
+  const site = { [SOURCES[0].registry]: registryFor(older), [SOURCES[0].book]: older, [SOURCES[1].registry]: registryFor(newer), [SOURCES[1].book]: newer };
+  const o = normalize({ mainBookSources: SOURCES, mainGraceMs: 2000 });
+  const live = await fetchLatestMainBook(o, slow(fakeFetch(site), 'b.example', 40));
+  assert.equal(live.source, 'B', 'the mirror that is still one edition behind must not win by answering first');
+  assert.equal(live.version, bump(shippedVersion(), 2));
+  const t = (await mainBookDefinition(o, slow(fakeFetch(site), 'b.example', 40)).execute({}, {})).content[0].text;
+  assert.ok(t.includes(`版本 ${bump(shippedVersion(), 2)}`) && t.includes('从 B 取的最新版'), t.split('\n').slice(0, 3).join(' | '));
+});
+
+test('live main book: the wait for the second source is short; equal versions keep the first to verify', async () => {
+  const older = edition(bump(shippedVersion(), 1));
+  const newer = edition(bump(shippedVersion(), 2));
+  const site = { [SOURCES[0].registry]: registryFor(older), [SOURCES[0].book]: older, [SOURCES[1].registry]: registryFor(newer), [SOURCES[1].book]: newer };
+  const t0 = Date.now();
+  const live = await fetchLatestMainBook(normalize({ mainBookSources: SOURCES, mainGraceMs: 30 }), slow(fakeFetch(site), 'b.example', 600));
+  assert.equal(live.source, 'A', 'a source slower than the wait is not waited for');
+  assert.ok(Date.now() - t0 < 500, 'the call must return after the short wait, not after the slow source');
+  const same = { [SOURCES[0].registry]: registryFor(newer), [SOURCES[0].book]: newer, [SOURCES[1].registry]: registryFor(newer), [SOURCES[1].book]: newer };
+  const tie = await fetchLatestMainBook(normalize({ mainBookSources: SOURCES, mainGraceMs: 2000 }), slow(fakeFetch(same), 'a.example', 40));
+  assert.equal(tie.source, 'B', 'same version on both: the one that verified first');
+  const t1 = Date.now();
+  const lone = { [SOURCES[0].registry]: registryFor(newer), [SOURCES[0].book]: newer, [SOURCES[1].registry]: 500 };
+  assert.equal((await fetchLatestMainBook(normalize({ mainBookSources: SOURCES, mainGraceMs: 2000 }), fakeFetch(lone))).source, 'A');
+  assert.ok(Date.now() - t1 < 1000, 'when the other source has already failed there is nothing to wait for');
+});
+
+test('live main book: the choice is kept one hour, then asked again', async (t) => {
+  const newer = edition(bump(shippedVersion(), 1));
+  const calls = [];
+  const site = { [SOURCES[0].registry]: registryFor(newer), [SOURCES[0].book]: newer, [SOURCES[1].registry]: 500 };
+  const tool = mainBookDefinition(normalize({ mainBookSources: SOURCES }), fakeFetch(site, calls));
+  t.mock.timers.enable({ apis: ['Date'], now: Date.now() });
+  await tool.execute({}, {});
+  const n = calls.length;
+  t.mock.timers.tick(59 * 60 * 1000);
+  await tool.execute({}, {});
+  assert.equal(calls.length, n, 'within the hour the cached choice is used');
+  t.mock.timers.tick(2 * 60 * 1000);
+  await tool.execute({}, {});
+  assert.ok(calls.length > n, 'after an hour the sources are asked again');
+});
+
 test('live main book: sources must be https; the default sources are the toolkit repository and its mirror', () => {
   assert.throws(() => normalize({ mainBookSources: [{ name: 'x', registry: 'http://x/r.json', book: 'https://x/b.md' }] }), /https/);
   const o = normalize({});
