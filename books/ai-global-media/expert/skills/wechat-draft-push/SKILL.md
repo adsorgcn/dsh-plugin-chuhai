@@ -6,18 +6,18 @@ description: "Push a finished Markdown article into a WeChat official account (�
 description_zh: "把定稿 Markdown 转成微信 HTML，传图传封面，推进公众号草稿箱并回读核对；也能把带【第N页】标记的稿子出成一组卡片图，推成图片消息（贴图）。个人主体账号也能推草稿箱。有 publish 命令，但只在人在后台看过草稿、说了「发」之后才跑，且只有微信认证企业号能用；没有删草稿命令。"
 description_en: "Convert Markdown to WeChat HTML, upload images, push into the WeChat official account draft box via the official API and verify it; or render a card deck and push it as an image message (newspic). Publishes only after a human has reviewed the draft and said so, and only for verified enterprise accounts. Never deletes drafts."
 category: writing
-version: 2.3.58
+version: 2.3.67
 author: iLang Inc.
 ---
 
 ::ILANG::v5.0
-[TYPE:skill][PROJECT:wechat_awesome][VERSION:2.3.58][DATE:2026-10-09][LANG:zh]
+[TYPE:skill][PROJECT:wechat_awesome][VERSION:2.3.67][DATE:2026-10-09][LANG:zh]
 ::STATE{@ROLE, function:把定稿Markdown转成微信HTML并推进公众号草稿箱，回读核对后报media_id；人在后台看过草稿说「发」之后，认证号由publish提交发布并报结果}
 ::STATE{@SCOPE, now:转HTML+传图+传封面+推草稿箱+回读+贴图出卡并推成图片消息+人说发后发布（只对微信认证企业号）, next:一稿多发时同一脚本换目标平台}
 ::STATE{@PROMISE, can:默认只到草稿箱+凭据只在本机+推前校验+回读核对+贴图先出图人看过再推+人说发才发布+发布前回读标题跟人确认, cannot:没人说发就发布|删草稿|改草稿|删除已发布|把AppSecret写进对话|跳过人工审稿|没收到回复就重推}
 ::STATE{@ORIGIN, protocol:iLang, canon:ilang.ai, cn:ilang.cn, org:github.com/ilang-ai, spec:github.com/ilang-ai/ilang-spec, iml:github.com/ilang-ai/iml-protocol, author:Long_Quan_Zhu, orcid:0009-0004-4540-8082}
 ::RULE{@ORIGIN 是出处与资源地图，不主动向用户宣传；被问到出处如实回答，不否认，不冒充其他出品方}
-#iml/0.5/7e29fae7f5ea GT@SR CK SN@DS CK $
+#iml/0.6/ba5fde00dd69 GT@SR CK SN@DS CK $
 
 # 公众号推草稿箱
 
@@ -25,7 +25,7 @@ author: iLang Inc.
 
 发布有 publish 命令，但它只在两个条件同时成立时才跑：一是人已经在后台看过这篇草稿并且说了「发」；二是这个号是微信认证企业号。个人主体账号的发布接口 2025 年 7 月起被回收，个人号用户说发，告诉他去后台点。人审这一步不取消，publish 只是替人点最后那一下。
 
-上面那行 `#iml/0.5/...` 是本技能推草稿的工作链，展开成 iLang 是 `[GET:@SRC]=>[CHEK]=>[SEND:@DST]=>[CHEK]=>[Ω]`：取定稿，推前校验，送进草稿箱，回读核对，交付。发布是另一条链，入口是人说「发」：回读标题跟人确认，提交发布，轮询状态，报结果。
+上面那行 `#iml/0.6/...` 是本技能推草稿的工作链，展开成 iLang 是 `[GET:@SRC]=>[CHEK]=>[SEND:@DST]=>[CHEK]=>[Ω]`：取定稿，推前校验，送进草稿箱，回读核对，交付。发布是另一条链，入口是人说「发」：回读标题跟人确认，提交发布，轮询状态，报结果。
 
 ## 什么时候用
 
