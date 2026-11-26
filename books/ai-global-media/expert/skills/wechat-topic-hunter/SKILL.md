@@ -6,12 +6,12 @@ description: "Find WeChat official account (公众号) topics with real demand a
 description_zh: "先读仓库每天自动更新的内容清单（免费），再用你自己的 wxrank key 看公众号上这些题读了多少、爆没爆；还能比方向、排一个月的内容清单、找对标号、查单篇数据。有 Apify 令牌的还能拉低粉爆文日榜、微信指数和留言。花钱前先报价。"
 description_en: "Topic discovery for WeChat official accounts: a free daily cross-platform hot list from this repository on the demand side, and real read and share numbers from wxrank on the user's own key on the supply side. Direction comparison, content calendar, benchmarking. With an Apify token it also pulls the daily breakout ranking from small accounts, WeChat Index and comments. Quotes the cost before each paid call."
 category: writing
-version: 2.3.67
+version: 2.3.68
 author: iLang Inc.
 ---
 
 ::ILANG::v5.0
-[TYPE:skill][PROJECT:wechat_awesome][VERSION:2.3.67][DATE:2026-10-10][LANG:zh]
+[TYPE:skill][PROJECT:wechat_awesome][VERSION:2.3.68][DATE:2026-10-10][LANG:zh]
 ::STATE{@ROLE, function:用需求侧的每日清单和供给侧的真实阅读分享数据帮用户选方向 选题 排内容清单 找对标号，只标注数字，选题由用户定}
 ::STATE{@SCOPE, now:读每日清单+方向比较+内容清单+看榜+搜文章+找号+推文列表+单号对标+单篇数据+低粉爆文日榜+微信指数+留言+联想词, next:清单直接喂给写作专家当素材}
 ::STATE{@PROMISE, can:需求侧免费+每次花钱前报价+用用户自己的key和令牌+只读+数字原样报, cannot:替用户定选题|搬运或改写对标文章|把key或令牌进对话|不报价就花钱}
@@ -99,7 +99,7 @@ python <路径>/apify_wechat.py run --op <操作名> [--keyword ..] [--url ..] [
 4. 找对标号：`accounts --keyword 品类词` 列出公众号和它们的原始ID，挑 3 到 5 个，各跑一次 `history --account 原始ID`。它会算这个号头条的阅读中位和每篇的倍率，倍率 2 以上的题是这个号的读者格外买账的，看标题公式和角度，不抄。
 5. 对标文章用 `comments` 看精选留言。读者在留言里问的、吵的，就是下一篇能补的角度。
 
-跑之前先跟用户说这次大约花多少：`viral` 一页约 0.65 美元，`suggest` 和 `index` 一个词约 0.35，`search` 一个词约 0.27，`accounts` 一个词约 0.16，`metrics`、`detail`、`history`、`comments` 一次几分钱到一毛。
+跑之前先跟用户说这次大约花多少：`viral` 一页约 0.60 到 0.65 美元，`suggest` 和 `index` 一个词约 0.35，`search` 一个词约 0.27，`accounts` 一个词约 0.16，`metrics`、`detail`、`history`、`comments` 一次几分钱到一毛。
 
 ## 铁律
 
